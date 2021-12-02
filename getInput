@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+source ${basedir}/secret
+
+if [ -z $1 ]
+then
+   echo "Which day do you want?"
+   read
+   day=${REPLY}
+else
+   day=$1
+fi
+
+curl -s -H "Cookie: session=$AOC_SESSION" "https://adventofcode.com/2021/day/$day/input" > input.txt
