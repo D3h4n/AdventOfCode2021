@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ${basedir}/secret
+source secret
 
 if [ -z $1 ]
 then
