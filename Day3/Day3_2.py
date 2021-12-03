@@ -1,5 +1,3 @@
-from io import SEEK_SET
-
 def getMajorityBit(numbers, row):
    bits = 0
 
@@ -14,20 +12,20 @@ def getMajorityBit(numbers, row):
 
 def main():
    with open("input.txt") as f:
-      numbers = list(map(lambda num: num.strip("\n"), f.readlines()))
-      c02 = numbers.copy()
+      oxy = list(map(lambda num: num.strip("\n"), f.readlines())) # get list of input data 
+      c02 = oxy.copy() # copy to new list
 
       col = 0
 
-      while len(numbers) > 1:
+      while len(oxy) > 1:
          # get most common bit in column
-         bit = getMajorityBit(numbers, col)
+         bit = getMajorityBit(oxy, col)
 
          # filter numbers that have correct bit at col
          if bit > 0:
-            numbers = list(filter(lambda x: x[col] == "0", numbers))
+            oxy = list(filter(lambda x: x[col] == "0", oxy))
          else:
-            numbers = list(filter(lambda x: x[col] == "1", numbers))
+            oxy = list(filter(lambda x: x[col] == "1", oxy))
 
          col += 1
 
@@ -46,7 +44,7 @@ def main():
          col += 1
 
       # convert answers to ints and print result
-      print(int(numbers[0], 2) * int(c02[0], 2))
+      print(int(oxy[0], 2) * int(c02[0], 2))
 
 if __name__ == "__main__":
    main() 
