@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# make directory
+mkdir "Day$1"
+
+# get input for day
+./getInput $1
+
+# move input to directory
+mv input.txt Day$1/
+
+# add template
+cp template.py Day$1/Day$1.py
+
+# add test input
+touch Day$1/test_input.txt
