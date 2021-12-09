@@ -12,5 +12,8 @@ mv input.txt Day$1/
 # add template
 cp template.py Day$1/Day$1.py
 
+# go to directory
+cd Day$1
+
 # add test input
-touch Day$1/test_input.txt
+touch test_input.txt
