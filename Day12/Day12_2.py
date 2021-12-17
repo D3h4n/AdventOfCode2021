@@ -57,7 +57,6 @@ def path_to_end(name: str, visited: list[str], twice: bool):
 
       num_paths += path_to_end(child, visited, twice)
 
-
    return num_paths
 
 def main(args):
