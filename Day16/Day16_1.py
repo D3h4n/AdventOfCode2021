@@ -1,6 +1,4 @@
-from functools import reduce, total_ordering
 import sys
-from types import prepare_class
 
 def main(args):
    global total
