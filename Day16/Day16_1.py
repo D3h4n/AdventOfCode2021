@@ -6,6 +6,7 @@ def main(args):
    global total
 
    with open("test_input.txt" if len(args) > 1 and args[1] == "-t" else "input.txt") as f:
+      # conversion table
       hex_to_bin = {
          "0": "0000",
          "1": "0001",
@@ -25,67 +26,83 @@ def main(args):
          "F": "1111",
       }
       
-      decoded = ""
-
       transmission = f.readline().strip("\n")
 
+      # convert table from hex to binary
+      decoded = ""
       for x in transmission:
          decoded += hex_to_bin[x]
 
+      # parse packet and print total
       total = 0
       parse_packet(decoded)
       print("\nTotal:", total)
 
 def parse_packet(packet):
    global total
+
+   # parse version and type id
    v = int(packet[:3], base=2)
    t = int(packet[3:6], base=2)
    packet = packet[6:]
 
+   # update total
    total += v
 
-   match t:
-      case 4:
-         last = False
-         val = ""
+   # check if literal
+   if t == 4:
+      last = False
+      val = ""
 
-         while not last:
-            sub_packet = packet[:5]
-            packet = packet[5:]
+      # loop through each packet
+      while not last:
+         sub_packet = packet[:5]
+         packet = packet[5:]
 
-            val += sub_packet[1:]
+         val += sub_packet[1:]
 
-            if sub_packet[0] == "0":
-               last = True
+         if sub_packet[0] == "0":
+            last = True
 
-         print("\nLiteral:", "\nVersion:", v, "Type ID:", t, "\nValue:", int(val, base=2))
-         return packet
+      # display packet value
+      print("\nLiteral:", "\nVersion:", v, "Type ID:", t, "\nValue:", int(val, base=2))
+   else:
+      # get length type id
+      i = int(packet[:1])
+      packet = packet[1:]
 
-      case _:
-         i = int(packet[:1])
-         packet = packet[1:]
+      # parse based on length type
+      match i:
+         case 0:
+            # get number of bits
+            length = int(packet[:15], base=2)
+            packet = packet[15:]
 
-         match i:
-            case 0:
-               length = int(packet[:15], base=2)
-               packet = packet[15:]
+            # print operator type and info
+            print("\nOperator:", "\nVersion:", v, "Type ID:", t, "\nLength type:", i, "Length:", length)
 
-               print("\nOperator:", "\nVersion:", v, "Type ID:", t, "\nLength type:", i, "Length:", length)
-               sub_packet = packet[:length]
-               packet = packet[length:]
-               
-               while len(sub_packet):
-                  sub_packet = parse_packet(sub_packet)
-               
-            case 1:
-               length = int(packet[:11], base=2)
-               packet = packet[11:]
+            # get sub packet
+            sub_packet = packet[:length]
+            packet = packet[length:]
 
-               print("\nOperator:", "\nVersion:", v, "Type ID:", t, "\nLength type:", i, "Length:", length)
-               for _ in range(length):
-                  packet = parse_packet(packet)
+            # parse subpacket
+            while len(sub_packet):
+               sub_packet = parse_packet(sub_packet)
+            
+         case 1:
+            # parse number of subpackets
+            num = int(packet[:11], base=2)
+            packet = packet[11:]
 
-         return packet
+            # print operator and info
+            print("\nOperator:", "\nVersion:", v, "Type ID:", t, "\nLength type:", i, "Number:", num)
+
+            # parse num packets
+            for _ in range(num):
+               packet = parse_packet(packet)
+
+   # return remaining data
+   return packet
 
 
 if __name__ == "__main__":
